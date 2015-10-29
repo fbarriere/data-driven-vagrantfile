@@ -9,3 +9,6 @@ nodes:
     providers:
       virtualbox:
         gui: true
+    modifyvm:
+      cpuexecutioncap: 50
+        

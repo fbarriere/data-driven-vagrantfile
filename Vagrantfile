@@ -170,6 +170,10 @@ def configure_providers(node, node_details, node_name)
     vb.customize [ 'modifyvm', :id, '--memory', node_details['memory'] ]
     vb.customize [ 'modifyvm', :id, '--cpus', node_details['cpus'] ]
     vb.name = node_name
+    modifyvm_params = node_details['modifyvm']
+    modifyvm_params && modifyvm_params.each do |k, v|
+      vb.customize [ 'modifyvm', :id, "--#{k}", "#{v}" ]
+    end
   end
   node.vm.provider 'vmware_fusion' do |vmf|
     vmf.vmx['memsize'] = node_details['memory']
