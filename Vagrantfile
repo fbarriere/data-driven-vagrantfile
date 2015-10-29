@@ -193,8 +193,8 @@ end
 ###############################################################################
 
 # Verify that vagrant.yml exists
-root_dir = File.dirname(__FILE__)
-vagrant_yaml_file = "#{root_dir}/vagrant.yml"
+config_root_dir = Dir.pwd
+vagrant_yaml_file = "#{config_root_dir}/vagrant.yml"
 error_msg = "#{vagrant_yaml_file} does not exist"
 handle_error(error_msg) unless File.exists?(vagrant_yaml_file)
 
