@@ -1,6 +1,5 @@
 *.swp
-vagrant.yml
 vagrant.json
 .vagrant
 *~
-external_functions/*.rb
+.project

@@ -1,0 +1,33 @@
+boxes:
+  centos-65-x64-virtualbox: http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-nocm.box
+plugins:
+  - hostmanager:
+      enabled: true
+      manage_host: true
+      ignore_private_ip: false
+nodes:
+  centos1:
+    hostname: centos1.vagrant.vm
+    box: centos-65-x64-virtualbox 
+    memory: 512
+    cpus: 1
+    networks:
+      - private_network:
+          ip: 192.168.139.10
+    plugins:
+      - hostmanager:
+          aliases: 
+            - firsthost
+  centos2:
+    hostname: centos2.vagrant.vm
+    box: centos-65-x64-virtualbox 
+    memory: 512
+    cpus: 1
+    networks:
+      - private_network:
+          ip: 192.168.139.11
+    plugins:
+      - hostmanager:
+          aliases: 
+            - secondhost
+    

@@ -191,6 +191,18 @@ def call_external_functions(node, node_details)
   end
 end
 
+# Configure plugins (node specific part)
+#
+def configure_plugins(node, node_details)
+  plugins = node_details['plugins']
+  plugins && plugins.each do |plugin|
+    plugin.each do |plugin_type, plugin_params|
+      plugin_params && plugin_params.each do |key, value|
+        node.send(plugin_type).send("#{key}=", value)
+      end
+    end
+  end
+end
 
 ###############################################################################
 # Initialization
@@ -207,8 +219,9 @@ vagrant_yaml = YAML.load_file(vagrant_yaml_file)
 error_msg = "#{vagrant_yaml_file} exists, but is empty"
 handle_error(error_msg) unless vagrant_yaml
 
-boxes = vagrant_yaml['boxes']
-nodes = vagrant_yaml['nodes']
+boxes   = vagrant_yaml['boxes']
+nodes   = vagrant_yaml['nodes']
+plugins = vagrant_yaml['plugins']
 
 # Verify that node definitions exist and are well-formed
 verify_nodes(nodes)
@@ -223,6 +236,16 @@ VAGRANTFILE_API_VERSION = '2'
 # For each node defined in vagrant.yml,
 # set the properties of a vagrant VM by calling the functions defined above.
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  
+  # Define the global plugins settings
+  plugins && plugins.each do |plugin|
+    plugin.each do |plugin_type, plugin_params|
+      plugin_params.each do |key, value|
+        config.send(plugin_type).send("#{key}=", value)
+      end
+    end
+  end
+  
   # Define vagrant VMs for each node defined in vagrant.yml
   nodes.each do |node_name, node_details|
     config.vm.define node_name do |node|
@@ -232,6 +255,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       configure_forwarded_ports(node, node_details)
       configure_provisioners(node, node_details)
       configure_providers(node, node_details, node_name)
+      configure_plugins(node, node_details)
 
       call_external_functions(node, node_details)
     end
