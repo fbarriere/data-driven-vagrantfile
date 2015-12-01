@@ -9,6 +9,24 @@
 # We're going to read from yaml files, so we gots to know how to yaml
 require 'yaml'
 
+#
+# Define the root of everything: the current directory...
+#
+config_root_dir = Dir.pwd
+
+#
+# Redefine the path to the .vagrant file to be project dependant:
+#
+VAGRANT_DOTFILE_PATH = "#{config_root_dir}/.vagrant"
+if(ENV['VAGRANT_DOTFILE_PATH'].nil? && '.vagrant' != VAGRANT_DOTFILE_PATH)
+    puts 'changing metadata directory to ' + VAGRANT_DOTFILE_PATH
+    ENV['VAGRANT_DOTFILE_PATH'] = VAGRANT_DOTFILE_PATH
+    #puts 'removing default metadata directory ' + FileUtils.rm_r('.vagrant').join("\n")
+    system 'vagrant ' + ARGV.join(' ')
+    ENV['VAGRANT_DOTFILE_PATH'] = nil #for good measure
+    abort 'Finished'
+end
+
 # If the external_functions directory exists, then load
 # functions from any ruby files in that directory
 #
@@ -209,7 +227,7 @@ end
 ###############################################################################
 
 # Verify that vagrant.yml exists
-config_root_dir = Dir.pwd
+#config_root_dir = Dir.pwd
 vagrant_yaml_file = "#{config_root_dir}/vagrant.yml"
 error_msg = "#{vagrant_yaml_file} does not exist"
 handle_error(error_msg) unless File.exists?(vagrant_yaml_file)
